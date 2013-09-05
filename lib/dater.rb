@@ -81,7 +81,5 @@ module Dater
 		def para(period)
 			self.for(period)
 		end
-
-		def 
 	end
 end
