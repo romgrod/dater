@@ -27,12 +27,16 @@ Or install it yourself as:
 
 ## Usage
 
-Initialize a dater object with a format to convert to:
+#Require gem
 
-	date=Dater::Resolver.new('%Y-%m-%d')
+require 'dater'
 
-To get the converted date:
-	
+#Initialize a dater object with a format to convert to:
+
+date=Dater::Resolver.new('%Y-%m-%d')
+
+#To get the converted date:
+
 	date.for("in 2 days") # => yyyy-mm-dd (date for 2 days from the date of today)
 	date.for("in 10 months") # => yyyy-mm-dd (date for 10 months from the date of today)
 	date.for("in 1 year") # => yyyy-mm-dd (date for 1 year from the date of today)
