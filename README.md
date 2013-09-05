@@ -7,9 +7,9 @@ You can also, convert dates from 'dd/mm/yyyy' to 'yyyy-mm-dd' or viceversa.
 
 If you want to pass a formatted date like dd/mm/yyyy to convert to yyyy-mm-dd, you have to take care about only two things with the argument:
 
-	- Year number must have four digits.
+1. Year number must have four digits.
 
-	- Month number must be always in the middle.
+2. Month number must be always in the middle.
 
 ## Installation
 
@@ -59,7 +59,7 @@ It does not work correctly with leap-years and calculates months of 30 days only
 
 Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:
 
-	date=Dater::Resolver.new('%Y-%m-%d', "en")
+	date=Dater::Resolver.new('%Y-%m-%d', "es")
 
 Con eso puedes pasar argumentos en idioma español (por ejemplo 'en 2 días', 'en 10 meses', 'en 1 año')
 
