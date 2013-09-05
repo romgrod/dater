@@ -30,12 +30,22 @@ module Dater
 			else
 				if period.include?('/')
 					date=period.split('/')
-					return date.join('-') if date.first.size==4
-					return "#{date[2]}-#{date[1]}-#{date[0]}"
+					if @format.include? '-'
+						return date.join('-') if date.first.size==4
+						return "#{date[2]}-#{date[1]}-#{date[0]}"
+					else
+						return date.join('/') if date.first.size==4
+						return "#{date[2]}/#{date[1]}/#{date[0]}"
+					end
 				elsif period.include?('-')
 					date=period.split('-')
-					return date.join('-') if date.first.size==4
-					return "#{date[2]}-#{date[1]}-#{date[0]}"
+					if @format.include? '-'
+						return date.join('-') if date.first.size==4
+						return "#{date[2]}-#{date[1]}-#{date[0]}"
+					else
+						return date.join('/') if date.first.size==4
+						return "#{date[2]}/#{date[1]}/#{date[0]}"
+					end
 				elsif (amount=period.scan(/\d+/)).size>0
 					case @lang
 					when 'es'
