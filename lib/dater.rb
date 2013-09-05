@@ -77,5 +77,11 @@ module Dater
 			end
 			return @date
 		end
+
+		def para(period)
+			self.for(period)
+		end
+
+		def 
 	end
 end

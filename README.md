@@ -69,7 +69,7 @@ Se você quiser usar esta gem em Português, você pode inicializar a classe da 
 
 	date=Dater::Resolver.new('%Y-%m-%d', "pt")
 
-Com isso você pode passar argumentos em Português (em dois dias, em 10 meses, 1 ano)
+Com isso você pode passar argumentos em Português (em 2 dias, em 10 meses, 1 ano)
 ## Contributing
 
 1. Fork it
