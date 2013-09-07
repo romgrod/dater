@@ -45,9 +45,7 @@ module Dater
 			when /\d+\-\d+\-\d+/
 				parts=period.split('-')
 			when /\d+/
-				amount=period.scan(/\d+/)
-				additional=amount[0].to_i*self.multiply_by(period,@lang)
-				@date=Time.now+additional
+				@date=Time.now+period.scan(/\d+/)[0].to_i*self.multiply_by(period,@lang)
 			else
 				return period
 			end
