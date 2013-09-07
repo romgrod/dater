@@ -1,10 +1,23 @@
 # coding: utf-8
+require 'date'
 require_relative "dater/version"
 
 module Dater
   
 	class Resolver
 		
+		attr_accessor :format, :lang
+
+		DICTIONARY = {
+			day:  		{ "en"=>/day(s)?/, 	"es" => /d(i|í)a(s)?/,"pt" => /dia(s)?/},
+			week: 		{ "en"=>/week(s)?/, "es" => /semana(s)?/, "pt" => /semana(s)?/},
+			month: 		{ "en"=>/month(s)?/,"es" => /mes(es)?/, 	"pt" => /mes(es)?/},
+			year: 		{ "en"=>/year(s)?/, "es" => /año(s)?/, 		"pt" => /ano(s)?/},
+			today: 		{ "en"=>'today', 		"es" => 'hoy', 				"pt" => 'hoje'},
+			tomorrow: { "en"=>'tomorrow', "es" => 'mañana',			"pt" => 'manhã'},
+			yesterday:{ "en"=>'yesterday',"es" => 'ayer', 			"pt" => 'ontem'}
+		}
+
 		# Creates a Dater::Resolver object
 		#
 		# Param [String] format = date format
@@ -20,62 +33,66 @@ module Dater
 		# Return [String] converted date to the configured format. If period is nil, returns date for tomorrow 
 		def for(period=nil)
 			return (Time.now).strftime(@format) if period.nil?
-			case period.downcase
-			when 'today','hoy','hoje'
+			case period.downcase 	
+			when DICTIONARY[:today][@lang]
 				return (Time.now).strftime(@format)
-			when 'tomorrow','mañana','manhã'
+			when DICTIONARY[:tomorrow][@lang]
 				return (Time.now+(3600*24)).strftime(@format)
-			when 'yesterday','ayer','ontem'
+			when DICTIONARY[:yesterday][@lang]
 				return (Time.now-(3600*24)).strftime(@format)
+			when /\d+\/\d+\/\d+/
+				parts=period.split('/')
+			when /\d+\-\d+\-\d+/
+				parts=period.split('-')
 			else
-				if period.include?('/')
-					date=period.split('/')
-					if @format.include? '-'
-						return date.join('-') if date.first.size==4
-						return "#{date[2]}-#{date[1]}-#{date[0]}"
+				if (amount=period.scan(/\d+/)).size>0
+					times=self.eval_times(period, @lang)
+					if times[:year]
+						multiply_by = 3600*24*30*12
+					elsif times[:months]
+						multiply_by = 3600*24*30
+					elsif times[:weeks]
+						multiply_by =	3600*24*7
+					elsif times[:days]
+						multiply_by = 3600*24
 					else
-						return date.join('/') if date.first.size==4
-						return "#{date[2]}/#{date[1]}/#{date[0]}"
-					end
-				elsif period.include?('-')
-					date=period.split('-')
-					if @format.include? '-'
-						return date.join('-') if date.first.size==4
-						return "#{date[2]}-#{date[1]}-#{date[0]}"
-					else
-						return date.join('/') if date.first.size==4
-						return "#{date[2]}/#{date[1]}/#{date[0]}"
-					end
-				elsif (amount=period.scan(/\d+/)).size>0
-					case @lang
-					when 'es'
-						days=true if period.scan(/dia(s)?/).size>0
-						months=true if period.scan(/mes(es)?/).size>0
-						year=true if period.scan(/año(s)?/).size>0
-					when 'en'
-						days=true if period.scan(/day(s)?/).size>0
-						months=true if period.scan(/month(s)?/).size>0
-						year=true if period.scan(/year(s)?/).size>0
-					when 'pt'
-						days=true if period.scan(/dia(s)?/).size>0
-						months=true if period.scan(/mes(es)?/).size>0
-						year=true if period.scan(/ano(s)?/).size>0
-					end	
-					if year
-						multiply_by=3600*24*30*12
-					elsif months
-						multiply_by=3600*24*30
-					else
-						multiply_by=3600*24
+						multiply_by = 1
 					end
 					additional=amount[0].to_i*multiply_by
 					@date=Time.now+additional
-					@date=@date.strftime(@format)			
 				else
 					return period
 				end
 			end
-			return @date
+			@date=time_from_date(parts) unless parts.nil?
+			return @date.strftime(@format)
+		end
+
+		# Set true the matched keyword in a given string
+		# 
+		# Param [String] period = the period of time expressed in a literal way
+		# Param [String] lang = the languaje to eval
+		# Return [Hash] times
+		def eval_times(period, lang)
+			times = {}
+			times[:days] 		= true if period.scan(DICTIONARY[:day][lang]).size>0
+			times[:weeks] 	= true if period.scan(DICTIONARY[:week][lang]).size>0
+			times[:months] 	= true if period.scan(DICTIONARY[:month][lang]).size>0
+			times[:year] 		= true if period.scan(DICTIONARY[:year][lang]).size>0
+			times
+		end
+
+		# Return the Time object according to the splitted date in the given array  
+		# 
+		# Param [Array] date = date splitted
+		# Return [Time] 
+		def time_from_date(date)
+			date.map!{|i| i.to_i}
+			if date.first.to_s.size==4
+				return Date.new(date[0],date[1],date[2]).to_time
+			else
+				return Date.new(date[2],date[1],date[0]).to_time
+			end
 		end
 
 		def para(period)
