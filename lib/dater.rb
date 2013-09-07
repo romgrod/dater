@@ -9,13 +9,13 @@ module Dater
 		attr_accessor :format, :lang
 
 		DICTIONARY = {
-			day:  		{ "en"=>/day(s)?/, 	"es" => /d(i|í)a(s)?/,"pt" => /dia(s)?/},
-			week: 		{ "en"=>/week(s)?/, "es" => /semana(s)?/, "pt" => /semana(s)?/},
-			month: 		{ "en"=>/month(s)?/,"es" => /mes(es)?/, 	"pt" => /mes(es)?/},
-			year: 		{ "en"=>/year(s)?/, "es" => /año(s)?/, 		"pt" => /ano(s)?/},
-			today: 		{ "en"=>'today', 		"es" => 'hoy', 				"pt" => 'hoje'},
-			tomorrow: { "en"=>'tomorrow', "es" => 'mañana',			"pt" => 'manhã'},
-			yesterday:{ "en"=>'yesterday',"es" => 'ayer', 			"pt" => 'ontem'}
+			day:  		{ "en"=>/days/, 		"es" => /(dias|días)/,"pt" => /dias/, 	:mult =>	86400},
+			week: 		{ "en"=>/weeks/, 		"es" => /semanas/, 		"pt" => /semanas/, :mult =>	604800},
+			month: 		{ "en"=>/months/,		"es" => /meses/, 			"pt" => /meses/, 	:mult =>  2592000},
+			year: 		{ "en"=>/years/, 		"es" => /años/, 			"pt" => /anos/, 	:mult =>  31536000},
+			today: 		{ "en"=>'today', 		"es" => 'hoy', 				"pt" => 'hoje' 	},
+			tomorrow: { "en"=>'tomorrow', "es" => 'mañana',			"pt" => 'manhã' 	},
+			yesterday:{ "en"=>'yesterday',"es" => 'ayer', 			"pt" => 'ontem' 	}
 		}
 
 		# Creates a Dater::Resolver object
@@ -33,23 +33,21 @@ module Dater
 		# Return [String] converted date to the configured format. If period is nil, returns date for tomorrow 
 		def for(period=nil)
 			return (Time.now).strftime(@format) if period.nil?
-			case period.downcase 	
+			@date=case period.downcase 	
 			when DICTIONARY[:today][@lang]
-				return (Time.now).strftime(@format)
+				self.today(false)
 			when DICTIONARY[:tomorrow][@lang]
-				return (Time.now+(3600*24)).strftime(@format)
+				self.tomorrow(false)
 			when DICTIONARY[:yesterday][@lang]
-				return (Time.now-(3600*24)).strftime(@format)
-			when /\d+\/\d+\/\d+/
-				parts=period.split('/')
-			when /\d+\-\d+\-\d+/
-				parts=period.split('-')
-			when /\d+/
-				@date=Time.now+period.scan(/\d+/)[0].to_i*self.multiply_by(period,@lang)
+				self.yesterday(false)
+			when /\d+.\d+.\d+/
+				time_from_date(period)	
+			when /\d+\s.+/
+				Time.now+period.scan(/\d+/)[0].to_i*self.multiply_by(period,@lang)
 			else
 				return period
 			end
-			@date=time_from_date(parts) unless parts.nil?
+			 # unless parts.nil?
 			return @date.strftime(@format)
 		end
 
@@ -59,29 +57,66 @@ module Dater
 		# Param [String] lang = the languaje to eval
 		# Return [Hash] times
 		def multiply_by(period, lang)
-			day=3600*24
-			return day 				if period.scan(DICTIONARY[:day][lang]).size>0
-			return day*7			if period.scan(DICTIONARY[:week][lang]).size>0
-			return day*30			if period.scan(DICTIONARY[:month][lang]).size>0
-			return day*30*12	if period.scan(DICTIONARY[:year][lang]).size>0
-			return 1
+			scanned = 1
+			scanned = DICTIONARY[:day][:mult] if period.scan(DICTIONARY[:day][lang]).size > 0
+			scanned = DICTIONARY[:week][:mult] if period.scan(DICTIONARY[:week][lang]).size > 0
+			scanned = DICTIONARY[:month][:mult] if period.scan(DICTIONARY[:month][lang]).size > 0
+			scanned = DICTIONARY[:year][:mult] if period.scan(DICTIONARY[:year][lang]).size > 0
+			return scanned
 		end
 
 		# Return the Time object according to the splitted date in the given array  
-		# 
+		# |
 		# Param [Array] date = date splitted
 		# Return [Time] 
 		def time_from_date(date)
-			date.map!{|i| i.to_i}
-			if date.first.to_s.size==4
-				return Date.new(date[0],date[1],date[2]).to_time
+			numbers=date.scan(/\d+/).map!{|i| i.to_i}
+			if numbers.first.to_s.size==4  
+				return Date.new(numbers[0],numbers[1],numbers[2]).to_time 
 			else
-				return Date.new(date[2],date[1],date[0]).to_time
+				return Date.new(numbers[2],numbers[1],numbers[0]).to_time
 			end
 		end
 
 		def para(period)
 			self.for(period)
 		end
+
+		def today(formatted=true)
+			formatted ?  Time.now.strftime(@format) :Time.now
+		end
+
+		def hoy
+			self.today(true)
+		end
+
+		def hoje
+			self.today(true)
+		end
+
+		def yesterday(formatted=true)
+			formatted ? (Time.now-(3600*24)).strftime(@format) : Time.now-(3600*24)
+		end
+
+		def ayer
+			self.yesterday(true)
+		end
+
+		def ontem
+			self.yesterday(true)
+		end
+
+		def tomorrow(formatted=true)
+			formatted ? (Time.now+(3600*24)).strftime(@format) : (Time.now+(3600*24))
+		end
+
+		def mañana
+			self.tomorrow(true)
+		end
+
+		def manhã
+			self.tomorrow(true)
+		end
+
 	end
 end
