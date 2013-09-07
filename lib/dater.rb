@@ -46,19 +46,7 @@ module Dater
 				parts=period.split('-')
 			else
 				if (amount=period.scan(/\d+/)).size>0
-					times=self.eval_times(period, @lang)
-					if times[:year]
-						multiply_by = 3600*24*30*12
-					elsif times[:months]
-						multiply_by = 3600*24*30
-					elsif times[:weeks]
-						multiply_by =	3600*24*7
-					elsif times[:days]
-						multiply_by = 3600*24
-					else
-						multiply_by = 1
-					end
-					additional=amount[0].to_i*multiply_by
+					additional=amount[0].to_i*self.multiply_by(period,@lang)
 					@date=Time.now+additional
 				else
 					return period
@@ -73,13 +61,12 @@ module Dater
 		# Param [String] period = the period of time expressed in a literal way
 		# Param [String] lang = the languaje to eval
 		# Return [Hash] times
-		def eval_times(period, lang)
-			times = {}
-			times[:days] 		= true if period.scan(DICTIONARY[:day][lang]).size>0
-			times[:weeks] 	= true if period.scan(DICTIONARY[:week][lang]).size>0
-			times[:months] 	= true if period.scan(DICTIONARY[:month][lang]).size>0
-			times[:year] 		= true if period.scan(DICTIONARY[:year][lang]).size>0
-			times
+		def multiply_by(period, lang)
+			return 3600*24 				if period.scan(DICTIONARY[:day][lang]).size>0
+			return 3600*24*7			if period.scan(DICTIONARY[:week][lang]).size>0
+			return 3600*24*30			if period.scan(DICTIONARY[:month][lang]).size>0
+			return 3600*24*30*12	if period.scan(DICTIONARY[:year][lang]).size>0
+			return 1
 		end
 
 		# Return the Time object according to the splitted date in the given array  
