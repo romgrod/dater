@@ -57,12 +57,28 @@ module Dater
 		# Param [String] lang = the languaje to eval
 		# Return [Hash] times
 		def multiply_by(period, lang)
-			scanned = 1
-			scanned = DICTIONARY[:day][:mult] if period.scan(DICTIONARY[:day][lang]).size > 0
-			scanned = DICTIONARY[:week][:mult] if period.scan(DICTIONARY[:week][lang]).size > 0
-			scanned = DICTIONARY[:month][:mult] if period.scan(DICTIONARY[:month][lang]).size > 0
-			scanned = DICTIONARY[:year][:mult] if period.scan(DICTIONARY[:year][lang]).size > 0
-			return scanned
+			mult = 1
+			mult = DICTIONARY[:day][:mult] if is_day?(period, lang)
+			mult = DICTIONARY[:week][:mult] if is_week?(period, lang)
+			mult = DICTIONARY[:month][:mult] if is_month?(period, lang)
+			mult = DICTIONARY[:year][:mult] if is_year?(period, lang)
+			return mult
+		end
+
+		def is_day?(period, lang)
+			period.scan(DICTIONARY[:day][lang]).size > 0 ? true : false
+		end
+
+		def is_week?(period, lang)
+			period.scan(DICTIONARY[:week][lang]).size > 0 ? true : false
+		end
+
+		def is_month?(period, lang)
+			period.scan(DICTIONARY[:month][lang]).size > 0 ? true : false
+		end
+
+		def is_year?(period, lang)
+			period.scan(DICTIONARY[:year][lang]).size > 0 ? true : false
 		end
 
 		# Return the Time object according to the splitted date in the given array  
