@@ -44,14 +44,21 @@ module Dater
 				parts=period.split('/')
 			when /\d+\-\d+\-\d+/
 				parts=period.split('-')
+			when /\d+/
+				amount=period.scan(/\d+/)
+				additional=amount[0].to_i*self.multiply_by(period,@lang)
+				@date=Time.now+additional
 			else
-				if (amount=period.scan(/\d+/)).size>0
-					additional=amount[0].to_i*self.multiply_by(period,@lang)
-					@date=Time.now+additional
-				else
-					return period
-				end
+				return period
 			end
+			# else
+			# 	if (amount=period.scan(/\d+/)).size>0
+			# 		additional=amount[0].to_i*self.multiply_by(period,@lang)
+			# 		@date=Time.now+additional
+			# 	else
+			# 		return period
+			# 	end
+			# end
 			@date=time_from_date(parts) unless parts.nil?
 			return @date.strftime(@format)
 		end
@@ -62,10 +69,11 @@ module Dater
 		# Param [String] lang = the languaje to eval
 		# Return [Hash] times
 		def multiply_by(period, lang)
-			return 3600*24 				if period.scan(DICTIONARY[:day][lang]).size>0
-			return 3600*24*7			if period.scan(DICTIONARY[:week][lang]).size>0
-			return 3600*24*30			if period.scan(DICTIONARY[:month][lang]).size>0
-			return 3600*24*30*12	if period.scan(DICTIONARY[:year][lang]).size>0
+			day=3600*24
+			return day 				if period.scan(DICTIONARY[:day][lang]).size>0
+			return day*7			if period.scan(DICTIONARY[:week][lang]).size>0
+			return day*30			if period.scan(DICTIONARY[:month][lang]).size>0
+			return day*30*12	if period.scan(DICTIONARY[:year][lang]).size>0
 			return 1
 		end
 
