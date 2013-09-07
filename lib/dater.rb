@@ -51,14 +51,6 @@ module Dater
 			else
 				return period
 			end
-			# else
-			# 	if (amount=period.scan(/\d+/)).size>0
-			# 		additional=amount[0].to_i*self.multiply_by(period,@lang)
-			# 		@date=Time.now+additional
-			# 	else
-			# 		return period
-			# 	end
-			# end
 			@date=time_from_date(parts) unless parts.nil?
 			return @date.strftime(@format)
 		end
