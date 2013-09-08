@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Dater : Convert literal periods of time in a formatted future date" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Dater</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/gitroman/dater">View on GitHub</a>
+
+          <h1 id="project_title">Dater</h1>
+          <h2 id="project_tagline">Convert literal periods of time in a formatted future date</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/gitroman/dater/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gitroman/dater/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Convert a period of time expressed in a literal way like 'in 2 days' to a formatted future date with a given format. It aims to be helpful in regression tests when you have to deal with dinamic dates.</p>
+
+<p>You can also, convert dates from 'dd/mm/yyyy' to 'yyyy-mm-dd' or viceversa.</p>
+
+<p>If you want to pass a formatted date like dd/mm/yyyy to convert to yyyy-mm-dd, you have to take care about only two things with the argument:</p>
+
+<ol>
+<li><p>Year number must have four digits.</p></li>
+<li><p>Month number must be always in the middle.</p></li>
+</ol><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<pre><code>gem 'dater'
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install dater
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<pre><code>require 'dater'
+
+date=Dater::Resolver.new('%Y-%m-%d')
+
+date.for("in 4 days") # =&gt; yyyy-mm-dd (date for 4 days from the date of today)
+date.for("in 2 weeks") # =&gt; yyyy-mm-dd (date for 2 weeks from the date of today)
+date.for("in 10 months") # =&gt; yyyy-mm-dd (date for 10 months from the date of today)
+date.for("in 1 year") # =&gt; yyyy-mm-dd (date for 1 year from the date of today)
+date.for("today") # =&gt; yyyy-mm-dd (date of today)
+date.for("tomorrow") # =&gt; yyyy-mm-dd (date of tomorrow)
+date.for("yesterday") # =&gt; yyyy-mm-dd (date of yesterday)
+
+date.yesterday
+date.today
+date.tomorrow
+</code></pre>
+
+<p>If the argument is nil, it will return the date of today.</p>
+
+<p>You'll find format directives at following link:</p>
+
+<p><a href="http://apidock.com/ruby/Time/strftime">http://apidock.com/ruby/Time/strftime</a></p>
+
+<p>It does not work correctly with leap-years and calculates months of 30 days only.</p>
+
+<hr><p>Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:</p>
+
+<pre><code>fecha=Dater::Resolver.new('%Y-%m-%d', "es")
+fecha.para("en 1 semana")
+fecha.ayer
+fecha.hoy
+fecha.mañana
+</code></pre>
+
+<p>Con eso puedes pasar argumentos en idioma español (por ejemplo 'en 2 días', 'en 10 meses', 'en 1 año')</p>
+
+<hr><p>Se você quiser usar esta gem em Português, você pode inicializar a classe da seguinte forma:</p>
+
+<pre><code>data=Dater::Resolver.new('%Y-%m-%d', "pt")
+data.para("em 2 dias")
+</code></pre>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create new Pull Request</li>
+</ol>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Dater maintained by <a href="https://github.com/gitroman">gitroman</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
