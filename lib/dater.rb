@@ -43,7 +43,7 @@ module Dater
 			when /\d+.\d+.\d+/
 				time_from_date(period)	
 			when /\d+\s.+/
-				Time.now+period.scan(/\d+/)[0].to_i*self.multiply_by(period,@lang)
+				Time.now+period.scan(/\d+/)[0].to_i*multiply_by(period)
 			else
 				return period
 			end
@@ -51,55 +51,14 @@ module Dater
 			return @date.strftime(@format)
 		end
 
-		# Set true the matched keyword in a given string
-		# 
-		# Param [String] period = the period of time expressed in a literal way
-		# Param [String] lang = the languaje to eval
-		# Return [Hash] times
-		def multiply_by(period, lang)
-			mult = 1
-			mult = DICTIONARY[:day][:mult] if is_day?(period, lang)
-			mult = DICTIONARY[:week][:mult] if is_week?(period, lang)
-			mult = DICTIONARY[:month][:mult] if is_month?(period, lang)
-			mult = DICTIONARY[:year][:mult] if is_year?(period, lang)
-			return mult
-		end
-
-		def is_day?(period, lang)
-			period.scan(DICTIONARY[:day][lang]).size > 0 ? true : false
-		end
-
-		def is_week?(period, lang)
-			period.scan(DICTIONARY[:week][lang]).size > 0 ? true : false
-		end
-
-		def is_month?(period, lang)
-			period.scan(DICTIONARY[:month][lang]).size > 0 ? true : false
-		end
-
-		def is_year?(period, lang)
-			period.scan(DICTIONARY[:year][lang]).size > 0 ? true : false
-		end
-
-		# Return the Time object according to the splitted date in the given array  
-		# |
-		# Param [Array] date = date splitted
-		# Return [Time] 
-		def time_from_date(date)
-			numbers=date.scan(/\d+/).map!{|i| i.to_i}
-			if numbers.first.to_s.size==4  
-				return Date.new(numbers[0],numbers[1],numbers[2]).to_time 
-			else
-				return Date.new(numbers[2],numbers[1],numbers[0]).to_time
-			end
-		end
-
 		def para(period)
 			self.for(period)
 		end
 
 		def today(formatted=true)
-			formatted ?  Time.now.strftime(@format) :Time.now
+			time=Time.now
+			time=time.strftime(@format) if formatted
+			time
 		end
 
 		def hoy
@@ -111,7 +70,9 @@ module Dater
 		end
 
 		def yesterday(formatted=true)
-			formatted ? (Time.now-(3600*24)).strftime(@format) : Time.now-(3600*24)
+			time=Time.now-(3600*24)
+			time=time.strftime(@format) if formatted
+			time
 		end
 
 		def ayer
@@ -123,7 +84,9 @@ module Dater
 		end
 
 		def tomorrow(formatted=true)
-			formatted ? (Time.now+(3600*24)).strftime(@format) : (Time.now+(3600*24))
+			time=Time.now+(3600*24)
+			time=time.strftime(@format) if formatted
+			time
 		end
 
 		def mañana
@@ -134,5 +97,49 @@ module Dater
 			self.tomorrow(true)
 		end
 
+	private
+
+		def day_mult(period)
+			period.scan(DICTIONARY[:day][@lang]).size > 0 ? DICTIONARY[:day][:mult] : nil
+		end
+
+		def week_mult(period)
+			period.scan(DICTIONARY[:week][@lang]).size > 0 ? DICTIONARY[:week][:mult] : nil
+		end
+
+		def month_mult(period)
+			period.scan(DICTIONARY[:month][@lang]).size > 0 ? DICTIONARY[:month][:mult] : nil
+		end
+
+		def year_mult(period)
+			period.scan(DICTIONARY[:year][@lang]).size > 0 ? DICTIONARY[:year][:mult] : nil
+		end
+
+		# Set true the matched keyword in a given string
+		# 
+		# Param [String] period = the period of time expressed in a literal way
+		# Param [String] lang = the languaje to eval
+		# Return [Hash] times
+		def multiply_by(period)
+
+			return day_mult(period) || week_mult(period) || month_mult(period) || year_mult(period) || 1
+			# mult = 1 
+			# mult = DICTIONARY[:day][:mult] if day_mult(period)
+			# mult = DICTIONARY[:week][:mult] if week_mult(period)
+			# mult = DICTIONARY[:month][:mult] if month_mult(period)
+			# mult = DICTIONARY[:year][:mult] if year_mult(period)
+			# return mult
+		end
+
+		
+		# Return the Time object according to the splitted date in the given array  
+		# |
+		# Param [Array] date = date splitted
+		# Return [Time] 
+		def time_from_date(date)
+			numbers=date.scan(/\d+/).map!{|i| i.to_i}
+			day=numbers[2-numbers.index(numbers.max)]
+			Date.new(numbers.max,numbers[1],day).to_time 
+		end
 	end
 end
