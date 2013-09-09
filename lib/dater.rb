@@ -70,8 +70,8 @@ module Dater
 		end
 
 		def yesterday(formatted=true)
-			time=Time.now-(3600*24)
-			time=time.strftime(@format) if formatted
+			time = one_day_diff(false)
+			time = time.strftime(@format) if formatted
 			time
 		end
 
@@ -84,7 +84,7 @@ module Dater
 		end
 
 		def tomorrow(formatted=true)
-			time=Time.now+(3600*24)
+			time = one_day_diff(true)
 			time=time.strftime(@format) if formatted
 			time
 		end
@@ -97,22 +97,44 @@ module Dater
 			self.tomorrow(true)
 		end
 
+		def one_day_diff(plus=true)
+			time=Time.now
+			diff = DICTIONARY[:day][:mult]
+			plus ? time+diff : time-diff
+		end
+
 	private
 
+		def is_day?(period)
+			true if period.scan(DICTIONARY[:day][@lang]).size > 0
+		end
+
 		def day_mult(period)
-			period.scan(DICTIONARY[:day][@lang]).size > 0 ? DICTIONARY[:day][:mult] : nil
+			DICTIONARY[:day][:mult] if is_day?(period)			 
+		end
+
+		def is_week?(period)
+			true if period.scan(DICTIONARY[:week][@lang]).size > 0
 		end
 
 		def week_mult(period)
-			period.scan(DICTIONARY[:week][@lang]).size > 0 ? DICTIONARY[:week][:mult] : nil
+			DICTIONARY[:week][:mult] if is_week?(period)
 		end
 
 		def month_mult(period)
-			period.scan(DICTIONARY[:month][@lang]).size > 0 ? DICTIONARY[:month][:mult] : nil
+			DICTIONARY[:month][:mult] if is_month?(period)
+		end
+
+		def is_month?(period)
+			true if period.scan(DICTIONARY[:month][@lang]).size > 0
 		end
 
 		def year_mult(period)
-			period.scan(DICTIONARY[:year][@lang]).size > 0 ? DICTIONARY[:year][:mult] : nil
+			DICTIONARY[:year][:mult] if is_year?(period)
+		end
+
+		def is_year?(period)
+			true if period.scan(DICTIONARY[:year][@lang]).size > 0
 		end
 
 		# Set true the matched keyword in a given string

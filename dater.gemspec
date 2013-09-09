@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["roman.g.rodriguez@gmail.com"]
   spec.description   = %q{This gem aims to help you with dates treatment, specially in regression test where you have to use future dates}
   spec.summary       = %q{Converts periods of time expresed in literal mode to a formatted date from the date of today}
-  spec.homepage      = "http://gitroman.github.io/dater"
+  spec.homepage      = "http://romantestdev.github.io/dater/"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
