@@ -21,9 +21,9 @@ module Dater
 		# Creates a Dater::Resolver object
 		#
 		# @param [String] format = date format
-		# @param [String] lang = languaje for matching (en=english, es=spanish, pt=portuguese)
 		# @param [Boolean] today_for_nil = Indicates if must return today'd date if argument in for method is nil
-		def initialize(format='%Y-%m-%d', lang="en", today_for_nil=false)
+		# @param [String] lang = languaje for matching (en=english, es=spanish, pt=portuguese)
+		def initialize(format='%Y-%m-%d', today_for_nil=false, lang="en")
 			@today_for_nil=today_for_nil
 			@format=format
 			@lang=lang if ["en","es","pt"].include? lang

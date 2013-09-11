@@ -50,7 +50,7 @@ Or install it yourself as:
 
 If the argument is nil, it will return nil. But you can initialize Dater object with 'today_for_nil' flag like:
 
-	date = Dater::Resolver.new("%Y-%m-%d", nil, true)
+	date = Dater::Resolver.new("%Y-%m-%d", true)
 
 	date.for #=> yyyy-mm-dd (date of today)
 
@@ -64,7 +64,7 @@ It does not work correctly with leap-years and calculates months of 30 days only
 
 Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:
 
-	date=Dater::Resolver.new('%Y-%m-%d', "es")
+	date=Dater::Resolver.new('%Y-%m-%d', false "es")
 
 Con eso puedes pasar argumentos en idioma español (por ejemplo 'en 2 días', 'en 10 meses', 'en 1 año')
 
