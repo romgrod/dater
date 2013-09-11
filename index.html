@@ -16,14 +16,14 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/gitroman/dater">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/romantestdev/dater">View on GitHub</a>
 
           <h1 id="project_title">Dater</h1>
           <h2 id="project_tagline">Convert literal periods of time in a formatted future date</h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/gitroman/dater/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/gitroman/dater/tarball/master">Download this project as a tar.gz file</a>
+              <a class="zip_download_link" href="https://github.com/romantestdev/dater/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/romantestdev/dater/tarball/master">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -78,7 +78,12 @@ date.today
 date.tomorrow
 </code></pre>
 
-<p>If the argument is nil, it will return the date of today.</p>
+<p>If the argument is nil, it will return nil. But you can initialize Dater object with 'today_for_nil' flag like:</p>
+
+<pre><code>date = Dater::Resolver.new("%Y-%m-%d", true)
+
+date.for #=&gt; yyyy-mm-dd (date of today)
+</code></pre>
 
 <p>You'll find format directives at following link:</p>
 
@@ -88,7 +93,7 @@ date.tomorrow
 
 <hr><p>Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:</p>
 
-<pre><code>fecha=Dater::Resolver.new('%Y-%m-%d', "es")
+<pre><code>fecha=Dater::Resolver.new('%Y-%m-%d', false, "es")
 fecha.para("en 1 semana")
 fecha.ayer
 fecha.hoy
@@ -99,7 +104,7 @@ fecha.mañana
 
 <hr><p>Se você quiser usar esta gem em Português, você pode inicializar a classe da seguinte forma:</p>
 
-<pre><code>data=Dater::Resolver.new('%Y-%m-%d', "pt")
+<pre><code>data=Dater::Resolver.new('%Y-%m-%d', false, "pt")
 data.para("em 2 dias")
 </code></pre>
 
@@ -119,7 +124,7 @@ data.para("em 2 dias")
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Dater maintained by <a href="https://github.com/gitroman">gitroman</a></p>
+        <p class="copyright">Dater maintained by <a href="https://github.com/romantestdev">romantestdev</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
