@@ -1,3 +1,5 @@
+<a href="https://codeclimate.com/repos/522a36ddf3ea0037550215e4/feed"><img src="https://codeclimate.com/repos/522a36ddf3ea0037550215e4/badges/776a40c87545905e8195/gpa.png" /></a>
+
 Dater
 =====
 
