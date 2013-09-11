@@ -10,7 +10,7 @@ module Dater
 
 		DICTIONARY = {
 			day:  		{ "en"=>/days/, 		"es" => /(dias|días)/,"pt" => /dias/, 	:mult =>	86400},
-			week: 		{ "en"=>/weeks/, 		"es" => /semanas/, 		"pt" => /semanas/, :mult d=>	604800},
+			week: 		{ "en"=>/weeks/, 		"es" => /semanas/, 		"pt" => /semanas/, :mult =>	604800},
 			month: 		{ "en"=>/months/,		"es" => /meses/, 			"pt" => /meses/, 	:mult =>  2592000},
 			year: 		{ "en"=>/years/, 		"es" => /años/, 			"pt" => /anos/, 	:mult =>  31536000},
 			today: 		{ "en"=>'today', 		"es" => 'hoy', 				"pt" => 'hoje' 	},
@@ -22,7 +22,8 @@ module Dater
 		#
 		# @param [String] format = date format
 		# @param [String] lang = languaje for matching (en=english, es=spanish, pt=portuguese)
-		def initialize(format='%Y-%m-%d', lang="en")
+		def initialize(format='%Y-%m-%d', lang="en", today_for_nil=false)
+			@today_for_nil=today_for_nil
 			@format=format
 			@lang=lang if ["en","es","pt"].include? lang
 		end
@@ -32,7 +33,9 @@ module Dater
 		# @param [String] period = a period of time like "in 3 days" or "in 10 months" or "in 2 years". It could be a formatted date to convert to the wanted format
 		# @return [String] converted date to the configured format. If period is nil, returns date for tomorrow 
 		def for(period=nil)
-			return (Time.now).strftime(@format) if period.nil?
+			if period.nil?
+				return  @today_for_nil ? (Time.now).strftime(@format) : nil
+			end
 			@date=case period.downcase 	
 			when DICTIONARY[:today][@lang]
 				self.today(false)
