@@ -22,6 +22,7 @@ module Dater
 		#
 		# @param [String] format = date format
 		# @param [String] lang = languaje for matching (en=english, es=spanish, pt=portuguese)
+		# @param [Boolean] today_for_nil = Indicates if must return today'd date if argument in for method is nil
 		def initialize(format='%Y-%m-%d', lang="en", today_for_nil=false)
 			@today_for_nil=today_for_nil
 			@format=format

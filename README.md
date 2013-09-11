@@ -48,7 +48,11 @@ Or install it yourself as:
 
 	date.for("yesterday") # => yyyy-mm-dd (date of yesterday)
 
-If the argument is nil, it will return the date of today.
+If the argument is nil, it will return nil. But you can initialize Dater object with 'today_for_nil' flag like:
+
+	date = Dater::Resolver.new("%Y-%m-%d", nil, true)
+
+	date.for #=> yyyy-mm-dd (date of today)
 
 You'll find format directives at following link:
 
