@@ -9,10 +9,10 @@ module Dater
 		attr_accessor :format, :lang
 
 		DICTIONARY = {
-			day:  		{ "en"=>/days/, 		"es" => /(dias|días)/,"pt" => /dias/, 	:mult =>	86400},
-			week: 		{ "en"=>/weeks/, 		"es" => /semanas/, 		"pt" => /semanas/, :mult =>	604800},
-			month: 		{ "en"=>/months/,		"es" => /meses/, 			"pt" => /meses/, 	:mult =>  2592000},
-			year: 		{ "en"=>/years/, 		"es" => /años/, 			"pt" => /anos/, 	:mult =>  31536000},
+			day:  		{ "en"=>/day/, 			"es" => /(dia|día)/,  "pt" => /dia/, 	:mult =>	86400},
+			week: 		{ "en"=>/week/, 		"es" => /semana/, 		"pt" => /semana/, :mult =>	604800},
+			month: 		{ "en"=>/month/,		"es" => /mes/, 				"pt" => /mes/, 	:mult =>  2592000},
+			year: 		{ "en"=>/year/, 		"es" => /año/, 				"pt" => /ano/, 	:mult =>  31536000},
 			today: 		{ "en"=>'today', 		"es" => 'hoy', 				"pt" => 'hoje' 	},
 			tomorrow: { "en"=>'tomorrow', "es" => 'mañana',			"pt" => 'manhã' 	},
 			yesterday:{ "en"=>'yesterday',"es" => 'ayer', 			"pt" => 'ontem' 	}
