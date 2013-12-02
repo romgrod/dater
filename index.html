@@ -1,37 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Dater : Convert literal periods of time in a formatted future date" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Dater by romgrod</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>Dater</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Dater</h1>
+        <p>Convert literal periods of time in a formatted future date</p>
+        <p class="view"><a href="https://github.com/romgrod/dater">View the Project on GitHub <small>romgrod/dater</small></a></p>
+        <ul>
+          <li><a href="https://github.com/romgrod/dater/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/romgrod/dater/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/romgrod/dater">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>Dater</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/romantestdev/dater">View on GitHub</a>
-
-          <h1 id="project_title">Dater</h1>
-          <h2 id="project_tagline">Convert literal periods of time in a formatted future date</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/romantestdev/dater/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/romantestdev/dater/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Convert a period of time expressed in a literal way like 'in 2 days' to a formatted future date with a given format. It aims to be helpful in regression tests when you have to deal with dinamic dates.</p>
+<p>Convert a period of time expressed in a literal way like 'in 2 days' to a formatted future date with a given format. It aims to be helpful in regression tests when you have to deal with dinamic dates.</p>
 
 <p>You can also, convert dates from 'dd/mm/yyyy' to 'yyyy-mm-dd' or viceversa.</p>
 
@@ -65,17 +63,58 @@
 
 date=Dater::Resolver.new('%Y-%m-%d')
 
-date.for("in 4 days") # =&gt; yyyy-mm-dd (date for 4 days from the date of today)
-date.for("in 2 weeks") # =&gt; yyyy-mm-dd (date for 2 weeks from the date of today)
-date.for("in 10 months") # =&gt; yyyy-mm-dd (date for 10 months from the date of today)
-date.for("in 1 year") # =&gt; yyyy-mm-dd (date for 1 year from the date of today)
-date.for("today") # =&gt; yyyy-mm-dd (date of today)
-date.for("tomorrow") # =&gt; yyyy-mm-dd (date of tomorrow)
-date.for("yesterday") # =&gt; yyyy-mm-dd (date of yesterday)
+#date.for(String) 
+#Example:
+date.for("in 2 weeks")
+=begin
+String could be:
+"in 4 days"     # =&gt; yyyy-mm-dd (date for 4 days from the date of today)
+"in 2 weeks"    # =&gt; yyyy-mm-dd (date for 2 weeks from the date of today)
+"in 10 months"  # =&gt; yyyy-mm-dd (date for 10 months from the date of today)
+"in 1 year"     # =&gt; yyyy-mm-dd (date for 1 year from the date of today)
+"next day"      # =&gt; yyyy-mm-dd (date for tomorrow from the date of today)
+"next week"     # =&gt; yyyy-mm-dd (adds a period of time for a week and returns the date)
+"next month"    # =&gt; yyyy-mm-dd (adds a period of time for a month and returns the date)
+"next year"     # =&gt; yyyy-mm-dd (adds a period of time for a year and returns the date)
+"yesterday"     # =&gt; yyyy-mm-dd (date of yesterday)
+"today"         # =&gt; yyyy-mm-dd (date of today)
+"tomorrow"      # =&gt; yyyy-mm-dd (date of tomorrow)
+"2 days ago"    # =&gt; yyyy-mm-dd (N days ago from today)
+"3 weeks ago"   # =&gt; yyyy-mm-dd (N weeks ago from today)
+"4 months ago"  # =&gt; yyyy-mm-dd (N months ago from today)
+"1 year ago"    # =&gt; yyyy-mm-dd (N year ago from today)
 
+#Some equivalent methods you can use:
 date.yesterday
 date.today
 date.tomorrow
+date.sunday
+date.monday
+date.thuesday
+date.wednesday
+date.thursday
+date.friday
+date.saturday
+date.next_day
+date.next_week
+date.next_month
+date.next_year
+=end
+</code></pre>
+
+<h1>
+<a name="special-feature" class="anchor" href="#special-feature"><span class="octicon octicon-link"></span></a>Special feature</h1>
+
+<p>later and before</p>
+
+<p>Giving the keywords 'later' or 'before' at the end of the string, Dater allows you to request dates from the last date requested. If there isn't any date requested previously, it takes as last requested date today's date</p>
+
+<pre><code>date.for("2 days later") # =&gt; You will get the date for two days later from the last requested date.
+</code></pre>
+
+<p>Example: Supose that the last requested date was 10/12/2013 (dd/mm/YYYY), using '2 days later' will give the result '12/12/2013'. </p>
+
+<pre><code>date.for("1 month before") # =&gt; You will get the date for one month before from the last requested date.
 </code></pre>
 
 <p>If the argument is nil, it will return nil. But you can initialize Dater object with 'today_for_nil' flag like:</p>
@@ -90,6 +129,8 @@ date.for #=&gt; yyyy-mm-dd (date of today)
 <p><a href="http://apidock.com/ruby/Time/strftime">http://apidock.com/ruby/Time/strftime</a></p>
 
 <p>It does not work correctly with leap-years and calculates months of 30 days only.</p>
+
+<p>It supports following languages: English (lang='en'), Spanish (lang='es') and Portuguese (lang='pt')</p>
 
 <hr><p>Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:</p>
 
@@ -109,6 +150,11 @@ data.para("em 2 dias")
 </code></pre>
 
 <h2>
+<a name="contributor" class="anchor" href="#contributor"><span class="octicon octicon-link"></span></a>Contributor</h2>
+
+<p>Federico Hertzulis</p>
+
+<h2>
 <a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
 <ol>
@@ -120,16 +166,11 @@ data.para("em 2 dias")
 </ol>
       </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Dater maintained by <a href="https://github.com/romantestdev">romantestdev</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
+    <footer>
+      <p>Project maintained by <a href="https://github.com/romgrod">romgrod</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
