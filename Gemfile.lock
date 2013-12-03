@@ -2,18 +2,10 @@ PATH
   remote: .
   specs:
     dater (0.3.2)
-      debugger
 
 GEM
   remote: https://rubygems.org/
   specs:
-    columnize (0.3.6)
-    debugger (1.6.1)
-      columnize (>= 0.3.1)
-      debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.2.3)
-    debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.3)
     rake (10.1.0)
 
 PLATFORMS
@@ -22,5 +14,4 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.3)
   dater!
-  debugger
   rake

@@ -1,10 +1,12 @@
 # encoding: utf-8
 require 'date'
+require_relative 'translator'
+
 module Dater
   
 	class Resolver
 		
-		attr_accessor :format, :lang
+		attr_accessor :format
 
 
 		# Creates a Dater::Resolver object
@@ -15,7 +17,7 @@ module Dater
 		def initialize(format='%Y-%m-%d', lang="en", today_for_nil=false)
 			@today_for_nil=today_for_nil
 			@format=format
-			@lang=lang if ["en","es","pt"].include? lang 
+			@translate=Dater::Translator.new(lang) 
 		end
 
 
@@ -29,7 +31,8 @@ module Dater
 				period = now.strftime(@format) if today_for_nil
 				return period
 			else
- 				@last_date = @date = time_for_period(period)
+				translated = @translate.this period
+ 				@last_date = @date = time_for_period(no_special_chars(translated))
 				@date.strftime(@format) if @date.respond_to? :strftime
 			end
 		end
@@ -40,6 +43,9 @@ module Dater
 			self.for(period)
 		end
 
+		def lang= lang
+			@translate=Dater::Translator.new(lang) 
+		end
 
 		private 
 
@@ -53,104 +59,16 @@ module Dater
 
 		WEEKDAYS 	= [	"sunday",	"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
-		PORTUGUESE = {
-			day:/dia/,
-			week:/semana/,
-			month:/mes/,
-			year:/ano/,
-			today:/hoje/,
-			tomorrow:/amanhã/,
-			yesterday:/ontem/,
-			in:/em/,
-			next:/prox/,
-			later:/depois/,
-			ago:/atras/, 
-			before:/antes/,
-			monday:/segunda/,
-			tuesday:/terca/,
-			wednesday:/quarta/,
-			thursday:/quinta/,
-			friday:/sexta/,
-			saturday:/sabado/,
-			sunday:/domingo/,
-			rand:/acaso/,
-			futura:/futur/,
-			past:/passad/
-		}
-
-		SPANISH = {
-			day:/dia/,
-			week:/semana/,
-			month:/mes/,
-			year:/año/,
-			today:/hoy/,
-			tomorrow:/mañana/,
-			yesterday:/ayer/,
-			in:/en/,
-			next:/prox/,
-			later:/despues/,
-			ago:/atras/,
-			before:/antes/,
-			monday:/lunes/,
-			tuesday:/martes/,
-			wednesday:/miercoles/,
-			thursday:/jueves/,
-			friday:/viernes/,
-			saturday:/sabado/,
-			sunday:/domingo/,
-			rand:/aleator/,
-			future:/futur/,
-			past:/pasad/
-		}
-
-		def english_for(word=nil)
-			unless word.nil?
-				word = no_special_chars(word.downcase)
-			end
-			case @lang
-			when "es"
-				spanish_translator word				
-			when "pt"
-				portuguese_translator word
-			else
-				word
-			end
-		end
-
-		def spanish_translator word
-			word.split(" ").map do |word|
-				translate_from_spanish word				
-			end.join(" ")
-		end
 		
-		def translate_from_spanish word
-			SPANISH.each_pair do |k,v|
-				return k.to_s if word =~ v
-			end
-			word
-		end
-
-		def portuguese_translator word
-			word.split(" ").map do |word|
-				translate_from_portuguese word				
-			end.join(" ")
-		end
-
-		def translate_from_portuguese word
-			PORTUGUESE.each_pair do |k,v|
-				return k.to_s if word =~ v
-			end
-			word
-		end
 
 		# Returns the formatted date according to the given period of time expresed in a literal way
 		# 
 		# @param [String] period = time expressed literally (e.g: in 2 days)
 		# @return [String] formatted time
-		def time_for_period(period=nil)
-			word = english_for no_special_chars(period)
+		def time_for_period(string=nil)
 			
-			@last_date = case word.downcase
+			
+			@last_date = case string
 			
 			when /today/,/now/
 				now
@@ -162,31 +80,31 @@ module Dater
 				yesterday_time
 
 			when /sunday/, /monday/, /tuesday/, /wednesday/, /thursday/, /friday/, /saturday/ 				
-				time_for_weekday(word)
+				time_for_weekday(string)
 
 			when /next/
-				now + period_of_time_from_string(word.gsub("next","1"))
+				now + period_of_time_from_string(string.gsub("next","1"))
 
 			when /last/
-				now - period_of_time_from_string(word.gsub("last","1"))				
+				now - period_of_time_from_string(string.gsub("last","1"))				
 
 			when /\d[\sa-zA-Z]+\sbefore/
 				@last_date ||= now 
-				@last_date -=  period_of_time_from_string(word)
+				@last_date -=  period_of_time_from_string(string)
 
 			when /\d[\sa-zA-Z]+\sago/
 				@last_date  ||= now 
-				now - period_of_time_from_string(word)
+				now - period_of_time_from_string(string)
 
 			when /\d[\sa-zA-Z]+\slater/
 				@last_date ||= now
-				@last_date +=  period_of_time_from_string(word)
+				@last_date +=  period_of_time_from_string(string)
 
 			when /in/,/\d\sdays?/, /\d\smonths?/, /\d\sweeks?/, /\d\syears?/
-				now + period_of_time_from_string(word)
+				now + period_of_time_from_string(string)
 
 			when /\d+.\d+.\d+/
-				time_from_date(word)	
+				time_from_date(string)	
 
 			when /rand/,/future/
 				now + rand(100_000_000)
@@ -289,7 +207,7 @@ module Dater
 		# @param [String] period 
 		# @return [Fixnum] multiplication factor for a day
 		def day_mult(period)
-			TIME_IN_SECONDS[:day] if is_day?(english_for period)		 
+			TIME_IN_SECONDS[:day] if is_day? period		 
 		end
 
 		# Scans if period has week word
@@ -305,7 +223,7 @@ module Dater
 		# @param [String] period 
 		# @return [Fixnum] multiplication factor for a week
 		def week_mult(period)
-			TIME_IN_SECONDS[:week] if is_week?(english_for period)
+			TIME_IN_SECONDS[:week] if is_week? period
 		end
 
 		# Scans if period has month word
@@ -321,7 +239,7 @@ module Dater
 		# @param [String] period 
 		# @return [Fixnum] multiplication factor for a month
 		def month_mult(period)
-			TIME_IN_SECONDS[:month] if is_month?(english_for period)
+			TIME_IN_SECONDS[:month] if is_month? period
 		end
 
 		# Scans if period string contain year word
@@ -337,15 +255,15 @@ module Dater
 		# @param [String] period = the string to convert to
 		# @return [Fixnum] multiplication factor for a year
 		def year_mult(period)
-			TIME_IN_SECONDS[:year] if is_year?(english_for period)
+			TIME_IN_SECONDS[:year] if is_year? period
 		end
 
 		# Returns seconds to multiply by for the given string
 		# 
 		# @param [String] period = the period of time expressed in a literal way
 		# @return [Fixnum] number to multiply by
-		def multiply_by(period)
-			return day_mult(period) || week_mult(period) || month_mult(period) || year_mult(period) || 1
+		def multiply_by(string)
+			return day_mult(string) || week_mult(string) || month_mult(string) || year_mult(string) || 1
 		end
 	
 		
@@ -373,7 +291,6 @@ module Dater
 		# 
 		# 
 		def method_missing(meth)
-			# if meth.to_s =~ /^(next_|próximo_|proximo_|last_|último_|ultimo_|in_|\d_|for).+$/i
 			self.class.send :define_method, meth do
 				string = meth.to_s.gsub("_"," ")
 				self.for("for('#{string}')")
@@ -386,7 +303,7 @@ module Dater
 		end
 
 		def no_special_chars(arg)
-			arg.gsub(/(á|Á)/, 'a').gsub(/(é|É)/, 'e').gsub(/(í|Í)/, 'i').gsub(/(ó|Ó)/, 'o').gsub(/(ú|Ú)/, 'u').gsub(/(ç|Ç)/, 'c')
+			arg.gsub(/(á|Á)/, 'a').gsub(/(é|É)/, 'e').gsub(/(í|Í)/, 'i').gsub(/(ó|Ó)/, 'o').gsub(/(ú|Ú)/, 'u').gsub(/(ç|Ç)/, 'c').downcase
 		end
 	end
 end

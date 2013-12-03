@@ -19,3 +19,4 @@ Rakefile
 _yardoc
 doc/
 test.rb
+Gemfile.lock
