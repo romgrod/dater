@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dater (0.3.0)
+    dater (0.3.2)
       debugger
 
 GEM

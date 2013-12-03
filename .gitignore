@@ -11,8 +11,11 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-
+*.lock
+*.txt
+Rakefile
 # YARD artifacts
 .yardoc
 _yardoc
 doc/
+test.rb

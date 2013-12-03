@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'date'
-
 module Dater
   
 	class Resolver
@@ -44,49 +43,6 @@ module Dater
 
 		private 
 
-		PORTUGUESE = {
-			day:/dia/i,
-			week:/semana/i,
-			month:/mes/i,
-			year:/ano/i,
-			today:/hoje/,
-			tomorrow:/amanhã/i,
-			yesterday:/ontem/i,
-			in:/em/i,
-			next:/prox/i,
-			later:/depois/i,
-			ago:/atras/i, 
-			before:/antes/i,
-			monday:/segunda/i,
-			tuesday:/terca/i,
-			wednesday:/quarta/i,
-			thursday:/quinta/i,
-			friday:/sexta/i,
-			saturday:/sabado/i,
-			sunday:/domingo/i
-		}
-
-		SPANISH = {
-			day:/dia/i,
-			week:/semana/i,
-			month:/mes/i,
-			year:/año/i,
-			today:/hoy/i,
-			tomorrow:/mañana/i,
-			yesterday:/ayer/i,
-			in:/en/i,
-			next:/prox/i,
-			later:/despues/i,
-			ago:/atras/i,
-			before:/antes/i,
-			monday:/lunes/i,
-			tuesday:/martes/i,
-			wednesday:/miercoles/i,
-			thursday:/jueves/i,
-			friday:/viernes/i,
-			saturday:/sabado/i,
-			sunday:/domingo/i
-		}
 
 		TIME_IN_SECONDS = {
 			day: 86400,
@@ -96,6 +52,70 @@ module Dater
 		}
 
 		WEEKDAYS 	= [	"sunday",	"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+
+		PORTUGUESE = {
+			day:/dia/,
+			week:/semana/,
+			month:/mes/,
+			year:/ano/,
+			today:/hoje/,
+			tomorrow:/amanhã/,
+			yesterday:/ontem/,
+			in:/em/,
+			next:/prox/,
+			later:/depois/,
+			ago:/atras/, 
+			before:/antes/,
+			monday:/segunda/,
+			tuesday:/terca/,
+			wednesday:/quarta/,
+			thursday:/quinta/,
+			friday:/sexta/,
+			saturday:/sabado/,
+			sunday:/domingo/,
+			rand:/acaso/,
+			futura:/futur/,
+			past:/passad/
+		}
+
+		SPANISH = {
+			day:/dia/,
+			week:/semana/,
+			month:/mes/,
+			year:/año/,
+			today:/hoy/,
+			tomorrow:/mañana/,
+			yesterday:/ayer/,
+			in:/en/,
+			next:/prox/,
+			later:/despues/,
+			ago:/atras/,
+			before:/antes/,
+			monday:/lunes/,
+			tuesday:/martes/,
+			wednesday:/miercoles/,
+			thursday:/jueves/,
+			friday:/viernes/,
+			saturday:/sabado/,
+			sunday:/domingo/,
+			rand:/aleator/,
+			future:/futur/,
+			past:/pasad/
+		}
+
+		def english_for(word=nil)
+			unless word.nil?
+				word = no_special_chars(word.downcase)
+			end
+			case @lang
+			when "es"
+				spanish_translator word				
+			when "pt"
+				portuguese_translator word
+			else
+				word
+			end
+		end
 
 		def spanish_translator word
 			word.split(" ").map do |word|
@@ -130,46 +150,49 @@ module Dater
 		def time_for_period(period=nil)
 			word = english_for no_special_chars(period)
 			
-			@last_date = case word
+			@last_date = case word.downcase
 			
-			when /today/i
+			when /today/,/now/
 				now
 
-			when /tomorrow/i
+			when /tomorrow/
 				tomorrow_time
 
-			when /yesterday/i
+			when /yesterday/
 				yesterday_time
 
-			when /sunday/i, /monday/i, /tuesday/i, /wednesday/i, /thursday/i, /friday/i, /saturday/i 				
+			when /sunday/, /monday/, /tuesday/, /wednesday/, /thursday/, /friday/, /saturday/ 				
 				time_for_weekday(word)
 
-			when /next/i
+			when /next/
 				now + period_of_time_from_string(word.gsub("next","1"))
 
-			when /last/i
+			when /last/
 				now - period_of_time_from_string(word.gsub("last","1"))				
 
-			when /before/i
+			when /\d[\sa-zA-Z]+\sbefore/
 				@last_date ||= now 
 				@last_date -=  period_of_time_from_string(word)
 
-			when /ago/i
+			when /\d[\sa-zA-Z]+\sago/
 				@last_date  ||= now 
 				now - period_of_time_from_string(word)
 
-			when /later/i
+			when /\d[\sa-zA-Z]+\slater/
 				@last_date ||= now
 				@last_date +=  period_of_time_from_string(word)
 
-			when /in/i
+			when /in/,/\d\sdays?/, /\d\smonths?/, /\d\sweeks?/, /\d\syears?/
 				now + period_of_time_from_string(word)
-
-			when /day/i, /month/i, /week/i, /year/i
-				move_to(word)
 
 			when /\d+.\d+.\d+/
 				time_from_date(word)	
+
+			when /rand/,/future/
+				now + rand(100_000_000)
+
+			when /past/
+				now - rand(100_000_000)
 			end
 				
 				return @last_date
@@ -189,23 +212,7 @@ module Dater
 			@last_date = Time.now + TIME_IN_SECONDS[:day]
 		end
 
-		def english_for(word=nil)
-			unless word.nil?
-				word = no_special_chars(word.downcase)
-			end
-			case @lang
-			when /es/,/sp/
-				spanish_translator word				
-			when /pt/,/port/
-				portuguese_translator word
-			else
-				word
-			end
-		end
-
-
 		
-
 		# Returns one week/month/year of difference from today's date. Formatted or not according to formatted param
 		#
 		# @param [String] period = the factor of difference (day, week, month, year) from today's date
@@ -229,17 +236,27 @@ module Dater
 		end
 
 		def time_for_weekday(word)
-			day = WEEKDAYS.select{ |day| day if day==word.scan(/[a-zA-Z]+/).last }.join
+			day = extract_day_from word
 			@count = Time.now
-			
-			# Add one day if today is the same required week day 
-			@count += move_a_day(word) if is_required_day?(@count, day)
-			
-			until is_required_day?(@count, day)
+			begin
 				@count+= move_a_day(word)
-			end
+			end until is_required_day?(@count, day)
 			@count
+		end
 
+		def extract_day_from word
+			WEEKDAYS.select{ |day| day if day==word.scan(/[a-zA-Z]+/).last }.join
+		end
+
+		# Method to know if the day is the required day
+		# 
+		# @param [Time] time
+		# @param [String] day = to match in case statement
+		# @return [Boolean] = true if day is the required day
+		def is_required_day?(time, day)
+			day_to_ask = "#{day}?"
+			result = eval("time.#{day_to_ask}") if time.respond_to? day_to_ask.to_sym
+			return result
 		end
 
 		# Return a day to add or substrac according to the given word
@@ -331,31 +348,7 @@ module Dater
 			return day_mult(period) || week_mult(period) || month_mult(period) || year_mult(period) || 1
 		end
 	
-		# Method to know if the day is the required day
-		# 
-		# @param [Time] time
-		# @param [String] day = to match in case statement
-		# @return [Boolean] = true if day is the required day
-		def is_required_day?(time, day)
-			case english_for(day).to_s
-			when /monday/i
-				time.monday? 
-			when /tuesday/i
-				time.tuesday? 
-			when /wednesday/i
-				time.wednesday? 
-			when /thursday/i
-				time.thursday? 
-			when /friday/i
-				time.friday? 
-			when /saturday/i
-				time.saturday? 
-			when /sunday/i
-				time.sunday? 
-			else
-				false
-			end
-		end
+		
 
 		# Return the Time object according to the splitted date in the given array  
 		# 
@@ -393,20 +386,7 @@ module Dater
 		end
 
 		def no_special_chars(arg)
-			arg.\
-			gsub('á', 'a').\
-			gsub('é', 'e').\
-			gsub('í', 'i').\
-			gsub('ó', 'o').\
-			gsub('ú', 'u').\
-			gsub('ç', 'c').\
-			gsub('Á', 'a').\
-			gsub('É', 'e').\
-			gsub('Í', 'i').\
-			gsub('Ó', 'o').\
-			gsub('Ú', 'u').\
-			gsub('Ñ', 'n').\
-			gsub('Ç', 'c')
+			arg.gsub(/(á|Á)/, 'a').gsub(/(é|É)/, 'e').gsub(/(í|Í)/, 'i').gsub(/(ó|Ó)/, 'o').gsub(/(ú|Ú)/, 'u').gsub(/(ç|Ç)/, 'c')
 		end
 	end
 end
