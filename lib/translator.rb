@@ -64,7 +64,7 @@ module Dater
 
 		def this word
 			return word if @lang=="en"
-			mapper word
+			mapper no_special_chars(word)
 		end
 
 		def mapper word
@@ -80,47 +80,9 @@ module Dater
 			word
 		end
 
-
-
-
-		# def english_for(word=nil)
-			
-		# 	case @lang
-		# 	when "es"
-		# 		spanish_translator word				
-		# 	when "pt"
-		# 		portuguese_translator word
-		# 	else
-		# 		word
-		# 	end
-		# end
-
-		# def spanish_translator word
-		# 	word.split(" ").map do |word|
-		# 		translate_from_spanish word				
-		# 	end.join(" ")
-		# end
-		
-		# def translate_from_spanish word
-		# 	SPANISH.each_pair do |k,v|
-		# 		return k.to_s if word =~ v
-		# 	end
-		# 	word
-		# end
-
-		# def portuguese_translator word
-		# 	word.split(" ").map do |word|
-		# 		translate_from_portuguese word				
-		# 	end.join(" ")
-		# end
-
-		# def translate_from_portuguese word
-		# 	PORTUGUESE.each_pair do |k,v|
-		# 		return k.to_s if word =~ v
-		# 	end
-		# 	word
-		# end
-
+		def no_special_chars(arg)
+			arg.gsub(/(á|Á)/, 'a').gsub(/(é|É)/, 'e').gsub(/(í|Í)/, 'i').gsub(/(ó|Ó)/, 'o').gsub(/(ú|Ú)/, 'u').gsub(/(ç|Ç)/, 'c').downcase
+		end
 
 	end
 end

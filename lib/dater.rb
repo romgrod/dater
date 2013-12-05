@@ -32,7 +32,7 @@ module Dater
 				return period
 			else
 				translated = @translate.this period
- 				@last_date = @date = time_for_period(no_special_chars(translated))
+ 				@last_date = @date = time_for_period(translated)
 				@date.strftime(@format) if @date.respond_to? :strftime
 			end
 		end
@@ -302,8 +302,5 @@ module Dater
 			end
 		end
 
-		def no_special_chars(arg)
-			arg.gsub(/(á|Á)/, 'a').gsub(/(é|É)/, 'e').gsub(/(í|Í)/, 'i').gsub(/(ó|Ó)/, 'o').gsub(/(ú|Ú)/, 'u').gsub(/(ç|Ç)/, 'c').downcase
-		end
 	end
 end
