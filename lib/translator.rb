@@ -7,6 +7,8 @@ module Dater
 		SUPPORTED_LANGUAGES = ["en","es","pt"]
 		
 		PORTUGUESE = {
+			hour: /hora/,
+			minute: /minuto/,
 			day:/dia/,
 			week:/semana/,
 			month:/mes/,
@@ -32,6 +34,8 @@ module Dater
 		}
 
 		SPANISH = {
+			hour: /hora/,
+			minute: /minuto/,
 			day:/dia/,
 			week:/semana/,
 			month:/mes/,

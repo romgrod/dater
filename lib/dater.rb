@@ -51,6 +51,8 @@ module Dater
 
 
 		TIME_IN_SECONDS = {
+			minute: 60,
+			hour: 3600,
 			day: 86400,
 			week: 604800,
 			month: 2592000,
@@ -100,7 +102,7 @@ module Dater
 				@last_date ||= now
 				@last_date +=  period_of_time_from_string(string)
 
-			when /in/,/\d\sdays?/, /\d\smonths?/, /\d\sweeks?/, /\d\syears?/
+			when /in/,/\d\sminutes?/,/\d\shours?/,/\d\sdays?/, /\d\smonths?/, /\d\sweeks?/, /\d\syears?/
 				now + period_of_time_from_string(string)
 
 			when /\d+.\d+.\d+/
@@ -194,6 +196,38 @@ module Dater
 			-TIME_IN_SECONDS[:day]
 		end
 
+		# Scans if period has day hour
+		# 
+		# @param [String] period 
+		# @return [Boolean] true if perdiod contains the word hour
+		def is_hour?(period)
+			period.scan(/hour/i).size > 0
+		end
+
+		# Multiplication factor for a day
+		# 
+		# @param [String] period 
+		# @return [Fixnum] multiplication factor for a day
+		def hour_mult(period)
+			TIME_IN_SECONDS[:hour] if is_hour? period		 
+		end
+
+		# Scans if period has day minute
+		# 
+		# @param [String] period 
+		# @return [Boolean] true if perdiod contains the word minute
+		def is_minute?(period)
+			period.scan(/minute/i).size > 0
+		end
+
+		# Multiplication factor for a day
+		# 
+		# @param [String] period 
+		# @return [Fixnum] multiplication factor for a day
+		def minute_mult(period)
+			TIME_IN_SECONDS[:minute] if is_minute? period		 
+		end
+
 		# Scans if period has day word
 		# 
 		# @param [String] period 
@@ -263,7 +297,7 @@ module Dater
 		# @param [String] period = the period of time expressed in a literal way
 		# @return [Fixnum] number to multiply by
 		def multiply_by(string)
-			return day_mult(string) || week_mult(string) || month_mult(string) || year_mult(string) || 1
+			return minute_mult(string) || hour_mult(string) || day_mult(string) || week_mult(string) || month_mult(string) || year_mult(string) || 1
 		end
 	
 		
