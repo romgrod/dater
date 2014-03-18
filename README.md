@@ -33,28 +33,31 @@ Or install it yourself as:
 
     require 'dater'
 
-    date=Dater::Resolver.new('%Y-%m-%d')
+    date=Dater::Resolver.new('%Y-%m-%d %H:%M')
 
     #date.for(String) 
     #Example:
     date.for("in 2 weeks")
     =begin
     String could be:
-    "in 4 days"     # => yyyy-mm-dd (date for 4 days from the date of today)
-    "in 2 weeks"    # => yyyy-mm-dd (date for 2 weeks from the date of today)
-    "in 10 months"  # => yyyy-mm-dd (date for 10 months from the date of today)
-    "in 1 year"     # => yyyy-mm-dd (date for 1 year from the date of today)
-    "next day"      # => yyyy-mm-dd (date for tomorrow from the date of today)
-    "next week"     # => yyyy-mm-dd (adds a period of time for a week and returns the date)
-    "next month"    # => yyyy-mm-dd (adds a period of time for a month and returns the date)
-    "next year"     # => yyyy-mm-dd (adds a period of time for a year and returns the date)
-    "yesterday"     # => yyyy-mm-dd (date of yesterday)
-    "today"         # => yyyy-mm-dd (date of today)
-    "tomorrow"      # => yyyy-mm-dd (date of tomorrow)
-    "2 days ago"	# => yyyy-mm-dd (N days ago from today)
-    "3 weeks ago"	# => yyyy-mm-dd (N weeks ago from today)
-    "4 months ago"	# => yyyy-mm-dd (N months ago from today)
-    "1 year ago"	# => yyyy-mm-dd (N year ago from today)
+
+    "in 5 minutes"  # => yyyy-mm-dd hh:mm (date for 5 minutes from the timestamp of now)
+    "in 2 hours"    # => yyyy-mm-dd hh:mm (date for 2 hours from the timestamp of now)
+    "in 4 days"     # => yyyy-mm-dd hh:mm (date for 4 days from the date of today)
+    "in 2 weeks"    # => yyyy-mm-dd hh:mm (date for 2 weeks from the date of today)
+    "in 10 months"  # => yyyy-mm-dd hh:mm (date for 10 months from the date of today)
+    "in 1 year"     # => yyyy-mm-dd hh:mm (date for 1 year from the date of today)
+    "next day"      # => yyyy-mm-dd hh:mm (date for tomorrow from the date of today)
+    "next week"     # => yyyy-mm-dd hh:mm (adds a period of time for a week and returns the date)
+    "next month"    # => yyyy-mm-dd hh:mm (adds a period of time for a month and returns the date)
+    "next year"     # => yyyy-mm-dd hh:mm (adds a period of time for a year and returns the date)
+    "yesterday"     # => yyyy-mm-dd hh:mm (date of yesterday)
+    "today"         # => yyyy-mm-dd hh:mm (date of today)
+    "tomorrow"      # => yyyy-mm-dd hh:mm (date of tomorrow)
+    "2 days ago"	# => yyyy-mm-dd hh:mm (N days ago from today)
+    "3 weeks ago"	# => yyyy-mm-dd hh:mm (N weeks ago from today)
+    "4 months ago"	# => yyyy-mm-dd hh:mm (N months ago from today)
+    "1 year ago"	# => yyyy-mm-dd hh:mm (N year ago from today)
 
     #Some equivalent methods you can use:
     date.yesterday
