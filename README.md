@@ -107,7 +107,7 @@ It supports following languages: English (lang='en'), Spanish (lang='es') and Po
 
 Si deseas usar esta gema en español puedes inicializar la clase de la siguiente manera:
 
-    fecha=Dater::Resolver.new('%Y-%m-%d', false, "es")
+    fecha=Dater::Resolver.new('%Y-%m-%d', "es", false)
     fecha.para("en 1 semana")
     fecha.ayer
     fecha.hoy
@@ -121,7 +121,7 @@ Con eso puedes pasar argumentos en idioma español (por ejemplo 'en 2 días', 'e
 
 Se você quiser usar esta gem em Português, você pode inicializar a classe da seguinte forma:
 
-    data=Dater::Resolver.new('%Y-%m-%d', false, "pt")
+    data=Dater::Resolver.new('%Y-%m-%d', "pt", false)
     data.para("em 2 dias")
 
 ## Contributor
