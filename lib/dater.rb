@@ -7,7 +7,7 @@ module Dater
   
 	class Resolver
 		
-		attr_accessor :format, :last_date, :date, :date_utc
+		attr_accessor :format, :last_date
 
 
 		# Creates a Dater::Resolver object
@@ -33,9 +33,9 @@ module Dater
 				return period
 			else
 				translated = @translate.this period
- 				@last_date = @date = time_for_period(translated)
-				@date_utc = @date.getgm.strftime(@format) 
-				@date.strftime(@format) if @date.respond_to? :strftime
+ 				@last_date = time_for_period(translated)
+ 				@last_date = @last_date.getgm if utc?
+				@last_date.strftime(@format)
 			end
 		end
 
@@ -47,6 +47,22 @@ module Dater
 
 		def lang= lang
 			@translate=Dater::Translator.new(lang) 
+		end
+
+		def utc?
+			@utc
+		end
+
+		def use_utc!
+			@utc = true
+		end
+
+		def utc= boolean=false
+			if [true,false].include? boolean
+				@utc = boolean
+			else
+				raise "utc= must be boolean"
+			end
 		end
 
 		private 
