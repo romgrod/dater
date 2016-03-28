@@ -1,17 +1,18 @@
 # encoding: utf-8
 require 'date'
+
 require_relative 'translator'
 
 module Dater
   
 	class Resolver
 		
-		attr_accessor :format
+		attr_accessor :format, :last_date
 
 
 		# Creates a Dater::Resolver object
 		#
-		# @param [String] format = date format
+		# @param [String] format = date format | Format : "%Y-%m-%dT%H:%M:%SZ"
 		# @param [String] lang = languaje for matching (en=english, es=spanish, pt=portuguese)
 		# @param [Boolean] today_for_nil = Indicates if must return today's date if given argument is nil
 		def initialize(format='%Y-%m-%d', lang="en", today_for_nil=false)
@@ -32,8 +33,9 @@ module Dater
 				return period
 			else
 				translated = @translate.this period
- 				@last_date = @date = time_for_period(translated)
-				@date.strftime(@format) if @date.respond_to? :strftime
+ 				@last_date = time_for_period(translated)
+ 				@last_date = @last_date.getgm if utc?
+				@last_date.strftime(@format)
 			end
 		end
 
@@ -45,6 +47,22 @@ module Dater
 
 		def lang= lang
 			@translate=Dater::Translator.new(lang) 
+		end
+
+		def utc?
+			@utc
+		end
+
+		def use_utc!
+			@utc = true
+		end
+
+		def utc= boolean=false
+			if [true,false].include? boolean
+				@utc = boolean
+			else
+				raise "utc= must be boolean"
+			end
 		end
 
 		private 
